@@ -153,7 +153,7 @@ try:
     long_description = "!!!!! missing pandoc do not upload to PyPI !!!!"
     try:
         import pypandoc
-        long_description = pypandoc.convert('README.md', 'rst')
+        long_description = pypandoc.convert('SETUP.md', 'rst')
     except ImportError:
         print("Could not import pypandoc - required to package PySpark", file=sys.stderr)
     except OSError:
