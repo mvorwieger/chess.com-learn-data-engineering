@@ -22,18 +22,44 @@ dag = DAG(dag_id='chess_com_dag',
           catchup=False,
           schedule_interval="0 * * * *")
 
-extract_chess_com_data = SparkSubmitOperator(task_id='extract',
-                                             conn_id='spark_default',
-                                             application='/usr/local/spark/app/extract_chess_data.py',
-                                             name='extract',
-                                             verbose=1,
-                                             conf={"spark.master": spark_master},
-                                             execution_timeout=timedelta(minutes=10),
-                                             packages="org.mongodb.spark:mongo-spark-connector_2.12:3.0.1",
-                                             application_args=[
-                                                 "mongodb://admin:password@mongodb:27017/products_database?authSource=admin", "mivo09",
-                                                 "01", "2021"],
-                                             dag=dag
-                                             )
+extract = SparkSubmitOperator(task_id='extract',
+                              conn_id='spark_default',
+                              application='/usr/local/spark/app/extract_chess_data.py',
+                              name='extract',
+                              verbose=True,
+                              conf={"spark.master": spark_master},
+                              execution_timeout=timedelta(minutes=10),
+                              packages="org.mongodb.spark:mongo-spark-connector_2.12:3.0.1",
+                              application_args=[
+                                  "mongodb://admin:password@mongodb:27017/products_database?authSource=admin", "mivo09",
+                                  "01", "2021"],
+                              dag=dag
+                              )
 
-extract_chess_com_data
+transform = SparkSubmitOperator(task_id='transform',
+                                conn_id='spark_default',
+                                application='/usr/local/spark/app/transform_chess_data.py',
+                                name='extract',
+                                verbose=True,
+                                conf={"spark.master": spark_master},
+                                execution_timeout=timedelta(minutes=10),
+                                packages="org.mongodb.spark:mongo-spark-connector_2.12:3.0.1",
+                                application_args=["mongodb://admin:password@mongodb:27017/products_database?authSource=admin", "01", "2021"],
+                                dag=dag
+                                )
+
+load = SparkSubmitOperator(task_id='load',
+                           conn_id='spark_default',
+                           application='/usr/local/spark/app/extract_chess_data.py',
+                           name='extract',
+                           verbose=True,
+                           conf={"spark.master": spark_master},
+                           execution_timeout=timedelta(minutes=10),
+                           packages="org.mongodb.spark:mongo-spark-connector_2.12:3.0.1",
+                           application_args=[
+                               "mongodb://admin:password@mongodb:27017/products_database?authSource=admin", "mivo09",
+                               "01", "2021"],
+                           dag=dag
+                           )
+
+extract
