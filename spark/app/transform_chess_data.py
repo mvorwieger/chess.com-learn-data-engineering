@@ -74,7 +74,9 @@ games_df = (
         col("black_result"),
         col("white_@id").alias("white_player_id"),
         col("white_rating"),
-        col("white_result")
+        col("white_result"),
+	col("time_class"),
+	col("time_control")
     )
 )
 
