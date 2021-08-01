@@ -1,5 +1,7 @@
 import sys
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+
 from modules import chess_com_api
 
 mongodb_url = sys.argv[1]
@@ -32,6 +34,16 @@ countries_df = (
         .option("collection", "countries_extracted")
         .load()
 )
+
+transformed_games_df = (
+    games_df
+        .withColumn("tie", ~games_df.white_result == "win" & ~games_df.white_result == "win")
+        .withColumn("winner",
+                    "white" if games_df.white_result == "win" else "black" if games_df.black_result == "win" else "tie")
+)
+
+transformed_games_df.show()
+
 print("######################################")
 print("Finished to Transform Games, Starint to save games now")
 print("######################################")
