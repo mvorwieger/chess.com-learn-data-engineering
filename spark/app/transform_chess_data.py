@@ -1,8 +1,6 @@
 import sys
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
-
-from modules import chess_com_api
+from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql.functions import col, from_unixtime, when
 
 mongodb_url = sys.argv[1]
 month = sys.argv[2]
@@ -10,71 +8,95 @@ year = sys.argv[3]
 
 spark = SparkSession.builder.getOrCreate()
 
-print("######################################")
-print("Starting to Transform Games")
-print("######################################")
+def find_winner(game_df: DataFrame):
+    return (
+        when(game_df.white_result == "win", "white")
+            .otherwise(
+            when(game_df.black_result == "win", "black")
+                .otherwise("tie")
+        )
+    )
 
-games_df = (
+countries_df_raw = (
     spark.read.format("mongo")
+        .option("collection", "countries_extracted")
         .option("spark.mongodb.input.uri", mongodb_url)
-        .option("collection", "games_extracted")
         .load()
 )
 
-players_df = (
-    spark.read.format("mongo")
-        .option("spark.mongodb.input.uri", mongodb_url)
-        .option("collection", "players_extracted")
-        .load()
-)
+countries_no_duplicates = countries_df_raw.drop_duplicates(["@id"])
 
 countries_df = (
+    countries_no_duplicates.select(
+        col("_id").alias("country_extracted_id"),
+        col("@id").alias("country_id"),
+        col("code"),
+        col("name")
+    )
+)
+
+players_df_raw = (
     spark.read.format("mongo")
+        .option("collection", "players_extracted")
         .option("spark.mongodb.input.uri", mongodb_url)
-        .option("collection", "countries_extracted")
         .load()
 )
 
-transformed_games_df = (
+players_no_duplicates = players_df_raw.dropDuplicates(["@id"])
+
+players_with_countries = players_no_duplicates.join(countries_df, players_no_duplicates.country == countries_df.country_id)
+
+players_df = players_with_countries.select(
+    col("_id").alias("player_extracted_id"),
+    col("@id").alias("player_id"),
+    countries_df.name.alias("country_name"),
+    col("username"),
+    col("code").alias("country_code")
+)
+
+games_df_raw = (
+    spark.read.format("mongo")
+        .option("collection", "games_extracted")
+        .option("spark.mongodb.input.uri", mongodb_url)
+        .load()
+)
+
+games_no_duplicates = games_df_raw.dropDuplicates(["url"])
+
+games_df = (
+    games_no_duplicates.select(
+        col("_id").alias("extracted_id"),
+        col("url").alias("match_id"),
+        from_unixtime(games_df_raw.end_time).alias("date"),
+        find_winner(games_df_raw).alias("winner"),
+        col("black_@id").alias("black_player_id"),
+        col("black_rating"),
+        col("black_result"),
+        col("white_@id").alias("white_player_id"),
+        col("white_rating"),
+        col("white_result")
+    )
+)
+
+# we can overwrite here because we load all the data in memory anyways. in the futur we should probably choose appaned and just put some unique constraints on the table.
+# apperently we can use shardKeys for this https://stackoverflow.com/questions/45505897/spark-scala-use-spark-mongo-connector-to-upsert
+(
     games_df
-        .withColumn("tie", ~games_df.white_result == "win" & ~games_df.white_result == "win")
-        .withColumn("winner",
-                    "white" if games_df.white_result == "win" else "black" if games_df.black_result == "win" else "tie")
-)
-
-transformed_games_df.show()
-
-print("######################################")
-print("Finished to Transform Games, Starint to save games now")
-print("######################################")
-
-(
-    games_df.write
+        .write
         .format("mongo")
-        .mode("append")
+        .option("collection", "games_transformed")
         .option("spark.mongodb.output.uri", mongodb_url)
-        .option("collection", "games")
+        .mode("overwrite")
         .save()
 )
 
 (
-    players_df.write
+    players_df
+        .write
         .format("mongo")
-        .mode("append")
+        .option("collection", "players_transformed")
         .option("spark.mongodb.output.uri", mongodb_url)
-        .option("collection", "players")
+        .mode("overwrite")
         .save()
 )
 
-(
-    countries_df.write
-        .format("mongo")
-        .mode("append")
-        .option("spark.mongodb.output.uri", mongodb_url)
-        .option("collection", "countries")
-        .save()
-)
-
-print("######################################")
-print("Finished to Save Games")
-print("######################################")

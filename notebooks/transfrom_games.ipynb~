@@ -2,8 +2,8 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": 142,
-   "id": "96a2a9fe",
+   "execution_count": 4,
+   "id": "24106885",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -12,10 +12,63 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 143,
-   "id": "e7dd2024",
+   "execution_count": 1,
+   "id": "36f22347",
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "WARNING: An illegal reflective access operation has occurred\n",
+      "WARNING: Illegal reflective access by org.apache.spark.unsafe.Platform (file:/usr/local/spark-3.1.2-bin-hadoop3.2/jars/spark-unsafe_2.12-3.1.2.jar) to constructor java.nio.DirectByteBuffer(long,int)\n",
+      "WARNING: Please consider reporting this to the maintainers of org.apache.spark.unsafe.Platform\n",
+      "WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations\n",
+      "WARNING: All illegal access operations will be denied in a future release\n",
+      "Ivy Default Cache set to: /home/jovyan/.ivy2/cache\n",
+      "The jars for the packages stored in: /home/jovyan/.ivy2/jars\n",
+      "org.mongodb.spark#mongo-spark-connector_2.12 added as a dependency\n",
+      ":: resolving dependencies :: org.apache.spark#spark-submit-parent-42beb5d1-1a3b-441c-8567-9a036d79e335;1.0\n",
+      "\tconfs: [default]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      ":: loading settings :: url = jar:file:/usr/local/spark-3.1.2-bin-hadoop3.2/jars/ivy-2.4.0.jar!/org/apache/ivy/core/settings/ivysettings.xml\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\tfound org.mongodb.spark#mongo-spark-connector_2.12;3.0.1 in central\n",
+      "\tfound org.mongodb#mongodb-driver-sync;4.0.5 in central\n",
+      "\tfound org.mongodb#bson;4.0.5 in central\n",
+      "\tfound org.mongodb#mongodb-driver-core;4.0.5 in central\n",
+      ":: resolution report :: resolve 162ms :: artifacts dl 5ms\n",
+      "\t:: modules in use:\n",
+      "\torg.mongodb#bson;4.0.5 from central in [default]\n",
+      "\torg.mongodb#mongodb-driver-core;4.0.5 from central in [default]\n",
+      "\torg.mongodb#mongodb-driver-sync;4.0.5 from central in [default]\n",
+      "\torg.mongodb.spark#mongo-spark-connector_2.12;3.0.1 from central in [default]\n",
+      "\t---------------------------------------------------------------------\n",
+      "\t|                  |            modules            ||   artifacts   |\n",
+      "\t|       conf       | number| search|dwnlded|evicted|| number|dwnlded|\n",
+      "\t---------------------------------------------------------------------\n",
+      "\t|      default     |   4   |   0   |   0   |   0   ||   4   |   0   |\n",
+      "\t---------------------------------------------------------------------\n",
+      ":: retrieving :: org.apache.spark#spark-submit-parent-42beb5d1-1a3b-441c-8567-9a036d79e335\n",
+      "\tconfs: [default]\n",
+      "\t0 artifacts copied, 4 already retrieved (0kB/4ms)\n",
+      "21/08/01 16:43:25 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable\n",
+      "Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties\n",
+      "Setting default log level to \"WARN\".\n",
+      "To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).\n"
+     ]
+    }
+   ],
    "source": [
     "from pyspark.sql import SparkSession\n",
     "from pyspark.sql.functions import *\n",
@@ -26,15 +79,14 @@
     "         .master(\"local\")\n",
     "         .appName(\"chess_load\")\n",
     "         .config(\"spark.jars.packages\", \"org.mongodb.spark:mongo-spark-connector_2.12:3.0.1\")\n",
-    "         .config(\"spark.mongodb.input.uri\", \"mongodb://admin:password@mongodb:27017/products_database?authSource=admin\")\n",
     "         .getOrCreate())\n",
     "sc = spark.sparkContext"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 144,
-   "id": "6635a2c5",
+   "execution_count": 2,
+   "id": "8a69b2e4",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -50,8 +102,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 145,
-   "id": "5fe4dfb5",
+   "execution_count": 5,
+   "id": "5ee940a2",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -76,8 +128,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 146,
-   "id": "10876f12",
+   "execution_count": 6,
+   "id": "10b1a4ab",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -103,8 +155,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 158,
-   "id": "3afd5669",
+   "execution_count": 7,
+   "id": "e9625501",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -137,8 +189,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 159,
-   "id": "1cf97a65",
+   "execution_count": 8,
+   "id": "3a961922",
    "metadata": {},
    "outputs": [
     {
@@ -165,8 +217,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 160,
-   "id": "1c370a10",
+   "execution_count": 9,
+   "id": "8cefe269",
    "metadata": {},
    "outputs": [
     {
@@ -191,17 +243,14 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 163,
-   "id": "f75ec20f",
+   "execution_count": 10,
+   "id": "a33074ec",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "\r",
-      "[Stage 314:==============================================>      (175 + 1) / 200]\r",
-      "\r",
       "                                                                                \r"
      ]
     },
@@ -921,7 +970,7 @@
        "36           765           win  "
       ]
      },
-     "execution_count": 163,
+     "execution_count": 10,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -932,10 +981,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 164,
-   "id": "becf24bd",
+   "execution_count": 11,
+   "id": "336c301a",
    "metadata": {},
    "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                \r"
+     ]
+    },
     {
      "data": {
       "text/html": [
@@ -1296,7 +1352,7 @@
        "28               c-shk           IR  "
       ]
      },
-     "execution_count": 164,
+     "execution_count": 11,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1308,7 +1364,15 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "4b943761",
+   "id": "e2bce817",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "35701be7",
    "metadata": {},
    "outputs": [],
    "source": []
