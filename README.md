@@ -4,7 +4,7 @@ The Goal of this Project is to learn about **Data Engineering** my main goal is 
 
 * _Extracts_ the latest chess games I've played from the chess.com Api daily
 * _Transforms_ them into a useful model using **Apache Spark (PySpark)**  such as the Kimball Model
-* makes them _Loadable_ from a Analytics Tool such as **Jupyter Lab**
+* makes them _Loadable_ from a Analytics Tool such as **Jupyter Lab** [see WIP notebook](./notebooks/analysis.ipynb)
 
 # Getting Started
 
