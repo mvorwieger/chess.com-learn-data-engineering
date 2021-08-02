@@ -10,9 +10,7 @@ The Goal of this Project is to learn about **Data Engineering** my main goal is 
 
 To start up the Application refer to [SETUP.md](SETUP.md)
 
-# Learnings
-
-Things I learned about whilst developing this Project:
+#Things I learned about whilst developing this Project:
 
 * Apache Spark (PySpark)
 * Jupyter Notebook
@@ -40,3 +38,18 @@ Things I learned about whilst developing this Project:
     * Differences in MapReduce & Spark
         * why MapReduce is slower (More IO)
         * why Spark is faster (can Process alot in Memory) & Ability to do Stream Processing
+
+##Topics On my TODO list:
+* Converting current setup into cloud (AWS)
+   * looking into Data Lake formations
+      * bronze, silver, gold pattern
+   * looking into Athena 
+      * AWS Glue to infer schema from S3 bucket
+   * Data Warehouse(schema on write) vs Data Lake(schema on read)
+      * You can use a Crawler on a Database(that can be a directory in a S3 Bucket) in a Data Lake to infer its schema 
+      * Cost Differences
+         * Data Warehouse: faster Queries, more Expensive Storage 
+         * Date Lakes: slower Queries, cheaper Storage
+      * Use Case Differences
+         * To be researched
+      
