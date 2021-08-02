@@ -10,7 +10,7 @@ The Goal of this Project is to learn about **Data Engineering** my main goal is 
 
 To start up the Application refer to [SETUP.md](SETUP.md)
 
-#Things I learned about whilst developing this Project:
+# Things I learned about whilst developing this Project:
 
 * Apache Spark (PySpark)
 * Jupyter Notebook
@@ -39,7 +39,7 @@ To start up the Application refer to [SETUP.md](SETUP.md)
         * why MapReduce is slower (More IO)
         * why Spark is faster (can Process alot in Memory) & Ability to do Stream Processing
 
-##Topics On my TODO list:
+## Topics On my TODO list:
 * Converting current setup into cloud (AWS)
    * looking into Data Lake formations
       * bronze, silver, gold pattern
